@@ -3,347 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaTrack - Smart Water Quality Monitoring</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AquaTrack - Water Quality Monitor</title>
     <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        @keyframes wave {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            75% { transform: rotate(-5deg); }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
         }
-        @keyframes ripple {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 40px;
         }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8); }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #00d4ff;
         }
-        .float-animation { animation: float 3s ease-in-out infinite; }
-        .wave-animation { animation: wave 2s ease-in-out infinite; }
-        .ripple { animation: ripple 1.5s ease-out infinite; }
-        .slide-in { animation: slideIn 0.6s ease-out forwards; }
-        .glow-effect { animation: glow 2s ease-in-out infinite; }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 200% 200%;
-            animation: gradientShift 15s ease infinite;
+        
+        .subtitle {
+            font-size: 18px;
+            color: #a0d8f1;
         }
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        
+        .status-bar {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 18px;
         }
-        .card-hover {
-            transition: all 0.3s ease;
+        
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
-        .card-hover:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .pulse-dot {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
+        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        .water-drop {
-            position: absolute;
-            background: radial-gradient(circle, rgba(59,130,246,0.4) 0%, rgba(59,130,246,0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
+        
+        .sensors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
         }
-        <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
-
+        
+        .sensor-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid;
+            transition: transform 0.3s;
+        }
+        
+        .sensor-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .sensor-card.safe {
+            border-color: #00ff00;
+        }
+        
+        .sensor-card.warning {
+            border-color: #ffff00;
+        }
+        
+        .sensor-card.danger {
+            border-color: #ff0000;
+        }
+        
+        .sensor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .sensor-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .sensor-icon {
+            font-size: 40px;
+        }
+        
+        .sensor-value {
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .sensor-unit {
+            font-size: 20px;
+            color: #a0d8f1;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        
+        .status-safe {
+            background: #00ff00;
+            color: #000;
+        }
+        
+        .status-warning {
+            background: #ffff00;
+            color: #000;
+        }
+        
+        .status-danger {
+            background: #ff0000;
+            color: #fff;
+        }
+        
+        .info-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .info-section h2 {
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #a0d8f1;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .sensor-value {
+                font-size: 40px;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white min-h-screen">
-    <h2>TDS: <span id="tds">Loading...</span></h2>
-<h2>Temperature: <span id="temp">Loading...</span></h2>
-<h2>Turbidity: <span id="turb">Loading...</span></h2>
-
-    <!-- Animated Background Water Drops -->
-    <div id="waterDrops" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-
-// Read TDS
-const tdsRef = ref(database, 'AquaTrack/TDS');
-onValue(tdsRef, (snapshot) => {
-  document.getElementById("tds").innerText = snapshot.val();
-});
-
-// Read Temperature
-const tempRef = ref(database, 'AquaTrack/Temperature');
-onValue(tempRef, (snapshot) => {
-  document.getElementById("temp").innerText = snapshot.val();
-});
-
-// Read Turbidity
-const turbRef = ref(database, 'AquaTrack/Turbidity');
-onValue(turbRef, (snapshot) => {
-  document.getElementById("turb").innerText = snapshot.val();
-});
-
-</script>
-
-    <!-- Header -->
-    <header class="glass-effect sticky top-0 z-50 shadow-2xl">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4 wave-animation">
-                    <svg class="w-14 h-14 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                    </svg>
-                    <div>
-                        <h1 class="text-4xl font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">AquaTrack</h1>
-                        <p class="text-sm text-cyan-300">IoT Water Quality System</p>
-                    </div>
-                </div>
-                <nav class="flex gap-4">
-                    <button onclick="showSection('home')" class="nav-btn px-6 py-2 rounded-full font-semibold transition-all hover:bg-cyan-500 hover:shadow-lg">Home</button>
-                    <button onclick="showSection('dashboard')" class="nav-btn px-6 py-2 rounded-full font-semibold transition-all hover:bg-cyan-500 hover:shadow-lg">Dashboard</button>
-                    <button onclick="showSection('features')" class="nav-btn px-6 py-2 rounded-full font-semibold transition-all hover:bg-cyan-500 hover:shadow-lg">Features</button>
-                    <button onclick="showSection('about')" class="nav-btn px-6 py-2 rounded-full font-semibold transition-all hover:bg-cyan-500 hover:shadow-lg">About</button>
-                </nav>
+<body>
+    <div class="container">
+        <header>
+            <h1>💧 AquaTrack</h1>
+            <p class="subtitle">Real-Time Water Quality Monitoring System</p>
+        </header>
+        
+        <div class="status-bar">
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>LIVE MONITORING</span>
+            </div>
+            <div>
+                <span>WiFi Connected • Last Update: <span id="lastUpdate">--:--:--</span></span>
             </div>
         </div>
-    </header>
-
-    <!-- Home Section -->
-    <section id="home" class="relative min-h-screen flex items-center justify-center px-6">
-        <div class="text-center z-10 max-w-5xl">
-            <div class="float-animation mb-8">
-                <svg class="w-32 h-32 mx-auto text-cyan-400 opacity-80" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                </svg>
-            </div>
-            <h2 class="text-7xl font-black mb-6 bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500 bg-clip-text text-transparent leading-tight">
-                The Future of Water Monitoring
-            </h2>
-            <p class="text-2xl text-cyan-100 mb-12 max-w-3xl mx-auto leading-relaxed">
-                Real-time IoT sensors with WiFi transmission. Monitor pH, Turbidity, TDS, Ammonia, Heavy Metals & more with intelligent color-coded alerts.
-            </p>
-            <div class="flex gap-6 justify-center">
-                <button onclick="showSection('dashboard')" class="glow-effect bg-gradient-to-r from-cyan-500 to-blue-600 px-10 py-5 rounded-full text-xl font-bold hover:scale-110 transition-all shadow-2xl">
-                    🌊 Live Dashboard
-                </button>
-                <button onclick="showSection('features')" class="glass-effect px-10 py-5 rounded-full text-xl font-bold hover:scale-110 transition-all border-2 border-cyan-400">
-                    ✨ Explore Features
-                </button>
-            </div>
-            
-            <!-- Status Indicators Preview -->
-            <div class="mt-16 flex gap-6 justify-center">
-                <div class="glass-effect px-6 py-4 rounded-2xl card-hover flex items-center gap-3">
-                    <div class="w-4 h-4 bg-green-500 rounded-full pulse-dot"></div>
-                    <span class="font-bold text-green-300">SAFE</span>
+        
+        <div class="sensors-grid" id="sensorsGrid">
+            <!-- Sensor cards will be inserted here -->
+        </div>
+        
+        <div class="info-section">
+            <h2>Status Indicators</h2>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00ff00;"></div>
+                    <span><strong>SAFE</strong> - Water quality is optimal</span>
                 </div>
-                <div class="glass-effect px-6 py-4 rounded-2xl card-hover flex items-center gap-3">
-                    <div class="w-4 h-4 bg-yellow-500 rounded-full pulse-dot"></div>
-                    <span class="font-bold text-yellow-300">WARNING</span>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffff00;"></div>
+                    <span><strong>WARNING</strong> - Approaching unsafe levels</span>
                 </div>
-                <div class="glass-effect px-6 py-4 rounded-2xl card-hover flex items-center gap-3">
-                    <div class="w-4 h-4 bg-red-500 rounded-full pulse-dot"></div>
-                    <span class="font-bold text-red-300">DANGER</span>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff0000;"></div>
+                    <span><strong>DANGER</strong> - Immediate action required</span>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Dashboard Section -->
-    <section id="dashboard" class="hidden min-h-screen py-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-12 flex items-center justify-between">
-                <div>
-                    <h2 class="text-5xl font-black bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">Live Monitoring Dashboard</h2>
-                    <p class="text-cyan-200 mt-2 text-lg">Real-time water quality data from WiFi sensors</p>
-                </div>
-                <div class="glass-effect px-6 py-3 rounded-full flex items-center gap-3">
-                    <div class="w-3 h-3 bg-green-500 rounded-full pulse-dot"></div>
-                    <span class="font-bold text-green-300">LIVE</span>
-                </div>
-            </div>
-
-            <div id="sensorCards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-            <!-- WiFi Status -->
-            <div class="mt-10 glass-effect p-6 rounded-2xl card-hover">
-                <div class="flex items-center gap-4">
-                    <svg class="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
-                    </svg>
-                    <div>
-                        <div class="font-bold text-xl text-green-300">WiFi Connected</div>
-                        <div class="text-cyan-200">Data transmitting • Last update: <span id="lastUpdate">Just now</span></div>
-                    </div>
-                </div>
-            </div>
+        
+        <div class="info-section">
+            <h2>About AquaTrack</h2>
+            <p>AquaTrack monitors three critical water quality parameters using IoT sensors with WiFi transmission:</p>
+            <ul style="margin-top: 15px; line-height: 2;">
+                <li>🌡️ <strong>Temperature</strong> - Monitors water temperature for optimal conditions</li>
+                <li>💎 <strong>TDS (Total Dissolved Solids)</strong> - Measures mineral content and purity</li>
+                <li>🌫️ <strong>Turbidity</strong> - Detects water clarity and suspended particles</li>
+            </ul>
         </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="hidden min-h-screen py-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-cyan-300 to-purple-400 bg-clip-text text-transparent">Powerful Features</h2>
-            
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="glass-effect p-8 rounded-3xl card-hover">
-                    <div class="text-6xl mb-6 float-animation">🔬</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-300">7 Key Parameters</h3>
-                    <p class="text-cyan-100">pH Level, Ammonia, Turbidity, TDS, Heavy Metals, Dissolved Oxygen, and Temperature monitoring in real-time.</p>
-                </div>
-                
-                <div class="glass-effect p-8 rounded-3xl card-hover">
-                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 0.2s;">📡</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-300">WiFi Transmission</h3>
-                    <p class="text-cyan-100">Seamless wireless data transfer to cloud dashboard. Access your data from anywhere, anytime.</p>
-                </div>
-                
-                <div class="glass-effect p-8 rounded-3xl card-hover">
-                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 0.4s;">⚠️</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-300">Smart Alerts</h3>
-                    <p class="text-cyan-100">Intelligent color-coded warning system: Green (Safe), Yellow (Warning), Red (Danger) for instant recognition.</p>
-                </div>
-                
-                <div class="glass-effect p-8 rounded-3xl card-hover">
-                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 0.6s;">📊</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-300">Data Visualization</h3>
-                    <p class="text-cyan-100">Beautiful, easy-to-understand graphs and charts for trend analysis and historical data review.</p>
-                </div>
-                
-                <div class="glass-effect p-8 rounded-3xl card-hover">
-                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 0.8s;">⚡</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-300">Real-Time Updates</h3>
-                    <p class="text-cyan-100">Continuous monitoring with instant updates every few seconds for critical water quality changes.</p>
-                </div>
-                
-                <div class="glass-effect p-8 rounded-3xl card-hover">
-                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 1s;">🌍</div>
-                    <h3 class="text-2xl font-bold mb-4 text-cyan-300">Multiple Applications</h3>
-                    <p class="text-cyan-100">Perfect for aquaculture, municipal water, industrial processes, environmental research, and more.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="hidden min-h-screen py-20 px-6">
-        <div class="max-w-5xl mx-auto">
-            <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">About AquaTrack</h2>
-            
-            <div class="glass-effect p-10 rounded-3xl mb-8 card-hover">
-                <p class="text-xl text-cyan-100 leading-relaxed mb-8">
-                    AquaTrack is a cutting-edge IoT-based water quality monitoring system that combines advanced sensor technology with intelligent data analytics. Our mission is to make water quality monitoring accessible, reliable, and actionable for everyone.
-                </p>
-                
-                <h3 class="text-3xl font-bold mb-6 text-cyan-300">What We Monitor</h3>
-                <div class="grid md:grid-cols-2 gap-4 mb-8">
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">💧</span> <span class="font-bold">pH Level</span>
-                    </div>
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">🧪</span> <span class="font-bold">Ammonia Levels</span>
-                    </div>
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">🌫️</span> <span class="font-bold">Turbidity</span>
-                    </div>
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">💎</span> <span class="font-bold">TDS (Total Dissolved Solids)</span>
-                    </div>
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">⚗️</span> <span class="font-bold">Heavy Metals</span>
-                    </div>
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">🫧</span> <span class="font-bold">Dissolved Oxygen</span>
-                    </div>
-                    <div class="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 rounded-xl">
-                        <span class="text-2xl">🌡️</span> <span class="font-bold">Temperature</span>
-                    </div>
-                </div>
-                
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-8 rounded-2xl">
-                    <h4 class="font-bold text-2xl mb-3">🎯 Our Vision</h4>
-                    <p class="text-lg">
-                        To revolutionize water quality monitoring through innovative IoT technology, ensuring safe and clean water for communities, industries, and ecosystems worldwide.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="glass-effect py-10 mt-20">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <div class="flex items-center justify-center gap-3 mb-4 wave-animation">
-                <svg class="w-10 h-10 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                </svg>
-                <span class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">AquaTrack</span>
-            </div>
-            <p class="text-cyan-300 text-lg">Ensuring water safety through intelligent monitoring</p>
-            <p class="text-cyan-500 text-sm mt-4">© 2024 AquaTrack. Innovating for a safer tomorrow.</p>
-        </div>
-    </footer>
+        
+        <footer>
+            <p>&copy; 2024 AquaTrack | IoT Water Quality Monitoring System</p>
+        </footer>
+    </div>
 
     <script>
-        // Water quality thresholds
+        // Thresholds for each parameter
         const thresholds = {
-            ph: { safe: [6.5, 8.5], warning: [6.0, 9.0] },
-            ammonia: { safe: [0, 0.5], warning: [0.5, 1.0] },
-            turbidity: { safe: [0, 5], warning: [5, 10] },
+            temperature: { safe: [20, 28], warning: [18, 30] },
             tds: { safe: [0, 500], warning: [500, 700] },
-            heavyMetals: { safe: [0, 0.05], warning: [0.05, 0.15] },
-            dissolvedOxygen: { safe: [6, 10], warning: [5, 6] },
-            temperature: { safe: [20, 28], warning: [18, 30] }
+            turbidity: { safe: [0, 5], warning: [5, 10] }
         };
 
-        // Sensor data
+        // Sensor data - starts at 0, will be updated by real sensors
         let sensorData = {
-            ph: 7.2,
-            ammonia: 0.3,
-            turbidity: 4.5,
-            tds: 320,
-            heavyMetals: 0.02,
-            dissolvedOxygen: 7.8,
-            temperature: 24.5
+            temperature: 0,
+            tds: 0,
+            turbidity: 0
         };
 
+        // Sensor configuration
         const sensors = [
-            { key: 'ph', name: 'pH Level', unit: 'pH', icon: '🧪', color: 'from-blue-500 to-cyan-500' },
-            { key: 'ammonia', name: 'Ammonia', unit: 'mg/L', icon: '💨', color: 'from-purple-500 to-pink-500' },
-            { key: 'turbidity', name: 'Turbidity', unit: 'NTU', icon: '🌫️', color: 'from-gray-500 to-slate-500' },
-            { key: 'tds', name: 'TDS', unit: 'ppm', icon: '💎', color: 'from-emerald-500 to-teal-500' },
-            { key: 'heavyMetals', name: 'Heavy Metals', unit: 'mg/L', icon: '⚗️', color: 'from-orange-500 to-red-500' },
-            { key: 'dissolvedOxygen', name: 'Dissolved Oxygen', unit: 'mg/L', icon: '🫧', color: 'from-cyan-500 to-blue-500' },
-            { key: 'temperature', name: 'Temperature', unit: '°C', icon: '🌡️', color: 'from-red-500 to-orange-500' }
+            { key: 'temperature', name: 'Temperature', unit: '°C', icon: '🌡️' },
+            { key: 'tds', name: 'TDS', unit: 'ppm', icon: '💎' },
+            { key: 'turbidity', name: 'Turbidity', unit: 'NTU', icon: '🌫️' }
         ];
 
+        // Determine status based on value
         function getStatus(parameter, value) {
             const t = thresholds[parameter];
             if (value >= t.safe[0] && value <= t.safe[1]) return 'safe';
@@ -351,92 +292,65 @@ onValue(turbRef, (snapshot) => {
             return 'danger';
         }
 
-        function getStatusConfig(status) {
-            return {
-                safe: { bg: 'bg-green-500', border: 'border-green-500', text: 'text-green-300', label: 'SAFE', icon: '✓' },
-                warning: { bg: 'bg-yellow-500', border: 'border-yellow-500', text: 'text-yellow-300', label: 'WARNING', icon: '⚠' },
-                danger: { bg: 'bg-red-500', border: 'border-red-500', text: 'text-red-300', label: 'DANGER', icon: '✕' }
-            }[status];
+        // Get status label
+        function getStatusLabel(status) {
+            const labels = {
+                safe: { text: '✓ SAFE', class: 'status-safe' },
+                warning: { text: '⚠ WARNING', class: 'status-warning' },
+                danger: { text: '✕ DANGER', class: 'status-danger' }
+            };
+            return labels[status];
         }
 
+        // Update dashboard display
         function updateDashboard() {
-            const container = document.getElementById('sensorCards');
-            container.innerHTML = sensors.map((sensor, index) => {
+            const grid = document.getElementById('sensorsGrid');
+            grid.innerHTML = sensors.map(sensor => {
                 const value = sensorData[sensor.key];
                 const status = getStatus(sensor.key, value);
-                const config = getStatusConfig(status);
+                const statusInfo = getStatusLabel(status);
                 
                 return `
-                    <div class="glass-effect p-6 rounded-2xl card-hover border-l-4 ${config.border}" style="animation: slideIn 0.6s ease-out ${index * 0.1}s forwards; opacity: 0;">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-4xl">${sensor.icon}</span>
-                                <h3 class="font-bold text-xl text-cyan-100">${sensor.name}</h3>
-                            </div>
-                            <div class="${config.bg} px-4 py-2 rounded-full flex items-center gap-2">
-                                <span class="font-bold">${config.icon}</span>
-                                <span class="font-bold text-sm">${config.label}</span>
-                            </div>
+                    <div class="sensor-card ${status}">
+                        <div class="sensor-header">
+                            <div class="sensor-name">${sensor.name}</div>
+                            <div class="sensor-icon">${sensor.icon}</div>
                         </div>
-                        <div class="text-5xl font-black bg-gradient-to-r ${sensor.color} bg-clip-text text-transparent">
-                            ${value.toFixed(2)} <span class="text-2xl ${config.text}">${sensor.unit}</span>
+                        <div class="sensor-value">
+                            ${value.toFixed(1)}
+                        </div>
+                        <div class="sensor-unit">${sensor.unit}</div>
+                        <div class="status-badge ${statusInfo.class}">
+                            ${statusInfo.text}
                         </div>
                     </div>
                 `;
             }).join('');
-        }
-
-        function updateSensorData() {
-            Object.keys(sensorData).forEach(key => {
-                const t = thresholds[key];
-                const range = t.warning[1] - t.warning[0];
-                const change = (Math.random() - 0.5) * range * 0.05;
-                sensorData[key] = Math.max(t.warning[0] * 0.8, Math.min(t.warning[1] * 1.2, sensorData[key] + change));
-            });
-            updateDashboard();
-            document.getElementById('lastUpdate').textContent = 'Just now';
-        }
-
-        function showSection(section) {
-            ['home', 'dashboard', 'features', 'about'].forEach(s => {
-                document.getElementById(s).classList.add('hidden');
-            });
-            document.getElementById(section).classList.remove('hidden');
             
-            if (section === 'dashboard') {
-                updateDashboard();
-            }
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-cyan-500', 'shadow-lg');
-            });
-            event.target.classList.add('bg-cyan-500', 'shadow-lg');
+            // Update timestamp
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
         }
 
-        // Animated water drops background
-        function createWaterDrops() {
-            const container = document.getElementById('waterDrops');
-            for (let i = 0; i < 15; i++) {
-                const drop = document.createElement('div');
-                drop.className = 'water-drop';
-                const size = Math.random() * 100 + 50;
-                drop.style.width = size + 'px';
-                drop.style.height = size + 'px';
-                drop.style.left = Math.random() * 100 + '%';
-                drop.style.top = Math.random() * 100 + '%';
-                drop.style.animationDelay = Math.random() * 5 + 's';
-                drop.classList.add('ripple');
-                container.appendChild(drop);
-            }
+        // Function to receive real sensor data
+        // Call this from your hardware: updateSensorData(temp, tds, turbidity)
+        function updateSensorData(temp, tdsValue, turbidityValue) {
+            sensorData.temperature = temp;
+            sensorData.tds = tdsValue;
+            sensorData.turbidity = turbidityValue;
+            updateDashboard();
         }
 
-        // Initialize
-        createWaterDrops();
+        // Make function accessible globally for hardware integration
+        window.updateSensorData = updateSensorData;
+
+        // Initialize dashboard
         updateDashboard();
-        setInterval(updateSensorData, 3000);
+        
+        // FOR TESTING: Uncomment line below to simulate data
+        // setInterval(() => updateSensorData(Math.random()*10+20, Math.random()*300+200, Math.random()*5+2), 3000);
     </script>
 </body>
-
 </html>
 
 
