@@ -66,39 +66,49 @@
             border-radius: 50%;
             pointer-events: none;
         }
+        <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white min-h-screen">
     
     <!-- Animated Background Water Drops -->
     <div id="waterDrops" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<script type="module">
 
-<script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-  };
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID"
+};
 
-  database.ref("AquaTrack/pH").on("value", (snapshot) => {
-    document.getElementById("ph").innerText = snapshot.val();
-  });
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-  database.ref("AquaTrack/TDS").on("value", (snapshot) => {
-    document.getElementById("tds").innerText = snapshot.val();
-  });
+// Read TDS
+const tdsRef = ref(database, 'AquaTrack/TDS');
+onValue(tdsRef, (snapshot) => {
+  document.getElementById("tds").innerText = snapshot.val();
+});
 
-  database.ref("AquaTrack/Temp").on("value", (snapshot) => {
-    document.getElementById("temp").innerText = snapshot.val();
-  });
+// Read Temperature
+const tempRef = ref(database, 'AquaTrack/Temperature');
+onValue(tempRef, (snapshot) => {
+  document.getElementById("temp").innerText = snapshot.val();
+});
+
+// Read Turbidity
+const turbRef = ref(database, 'AquaTrack/Turbidity');
+onValue(turbRef, (snapshot) => {
+  document.getElementById("turb").innerText = snapshot.val();
+});
 
 </script>
+
     <!-- Header -->
     <header class="glass-effect sticky top-0 z-50 shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 py-4">
@@ -425,3 +435,4 @@
 </body>
 
 </html>
+
