@@ -72,7 +72,10 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white min-h-screen">
-    
+    <h2>TDS: <span id="tds">Loading...</span></h2>
+<h2>Temperature: <span id="temp">Loading...</span></h2>
+<h2>Turbidity: <span id="turb">Loading...</span></h2>
+
     <!-- Animated Background Water Drops -->
     <div id="waterDrops" class="fixed inset-0 overflow-hidden pointer-events-none z-0"></div>
 <script type="module">
@@ -435,4 +438,5 @@ onValue(turbRef, (snapshot) => {
 </body>
 
 </html>
+
 
